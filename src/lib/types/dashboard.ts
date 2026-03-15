@@ -5,15 +5,14 @@
 
 export interface RecipientEntry {
   id: string;
-  fullName: string;
-  phoneNumber: string;
-  dateOfBirth: string; // ISO format: YYYY-MM-DD
-  customMessage: string;
-  status: 'sent' | 'pending' | 'failed';
-  sentDate?: string; // ISO format timestamp
-  createdAt: string;
-  updatedAt: string;
-  userId: string;
+  user_id: string;
+  full_name: string;
+  phone_number: string;
+  date_of_birth: string; // ISO format: YYYY-MM-DD
+  custom_message: string;
+  status: 'sent' | 'pending';
+  created_at: string;
+  updated_at: string;
 }
 
 export interface DashboardStatistics {
@@ -31,10 +30,10 @@ export interface DashboardResponse {
 }
 
 export interface CreateEntryPayload {
-  fullName: string;
-  phoneNumber: string;
-  dateOfBirth: string;
-  customMessage: string;
+  full_name: string;
+  phone_number: string;
+  date_of_birth: string;
+  custom_message: string;
 }
 
 export interface UpdateEntryPayload extends Partial<CreateEntryPayload> {
@@ -49,5 +48,5 @@ export interface PaginationParams {
   page: number;
   pageSize: number;
   searchQuery?: string;
-  status?: 'sent' | 'pending' | 'failed' | 'all';
+  status?: 'sent' | 'pending' | 'all';
 }

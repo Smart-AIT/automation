@@ -1,10 +1,12 @@
 'use server'
 
-import { supabase } from '../supabase/client'
+import { createSupabaseServerClient } from '../supabase/server'
 import { AuthResponse, SignUpFormData, SignInFormData } from '../types/auth'
 
 export async function signUp(data: SignUpFormData): Promise<AuthResponse> {
   try {
+    const supabase = await createSupabaseServerClient()
+    
     // When email confirmation is enabled in Supabase:
     // 1. This creates the user
     // 2. User status = "unconfirmed"
@@ -50,6 +52,7 @@ export async function signUp(data: SignUpFormData): Promise<AuthResponse> {
       error: null,
     }
   } catch (error) {
+    console.error('Sign up exception:', error)
     return {
       user: null,
       error: error instanceof Error ? error.message : 'An error occurred',
@@ -59,6 +62,8 @@ export async function signUp(data: SignUpFormData): Promise<AuthResponse> {
 
 export async function signIn(data: SignInFormData): Promise<AuthResponse> {
   try {
+    const supabase = await createSupabaseServerClient()
+    
     const { data: authData, error: signInError } =
       await supabase.auth.signInWithPassword({
         email: data.email,
@@ -77,7 +82,7 @@ export async function signIn(data: SignInFormData): Promise<AuthResponse> {
       }
     }
 
-    // ✅ NEW: Check if email is confirmed
+    // ✅ Check if email is confirmed
     if (authData.user && !authData.user.email_confirmed_at) {
       return {
         user: null,
@@ -102,6 +107,7 @@ export async function signIn(data: SignInFormData): Promise<AuthResponse> {
       error: null,
     }
   } catch (error) {
+    console.error('Sign in exception:', error)
     return {
       user: null,
       error: error instanceof Error ? error.message : 'An error occurred',
@@ -111,6 +117,7 @@ export async function signIn(data: SignInFormData): Promise<AuthResponse> {
 
 export async function signOut(): Promise<{ error: string | null }> {
   try {
+    const supabase = await createSupabaseServerClient()
     const { error } = await supabase.auth.signOut()
 
     if (error) {
@@ -119,6 +126,7 @@ export async function signOut(): Promise<{ error: string | null }> {
 
     return { error: null }
   } catch (error) {
+    console.error('Sign out exception:', error)
     return {
       error: error instanceof Error ? error.message : 'An error occurred',
     }

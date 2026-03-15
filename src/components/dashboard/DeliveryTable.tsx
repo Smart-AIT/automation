@@ -1,15 +1,34 @@
 'use client';
 
+import { useState } from 'react';
 import { Trash2, Edit } from 'lucide-react';
 import type { RecipientEntry } from '@/lib/types/dashboard';
+import { EditEntryModal } from './EditEntryModal';
 
 interface DeliveryTableProps {
   entries: RecipientEntry[];
   onDelete: (id: string) => void;
+  onSuccess?: () => void;
   isLoading?: boolean;
 }
 
-export function DeliveryTable({ entries, onDelete, isLoading = false }: DeliveryTableProps) {
+export function DeliveryTable({ entries, onDelete, onSuccess, isLoading = false }: DeliveryTableProps) {
+  const [selectedEntry, setSelectedEntry] = useState<RecipientEntry | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  const handleEditClick = (entry: RecipientEntry) => {
+    setSelectedEntry(entry);
+    setIsEditModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsEditModalOpen(false);
+    setSelectedEntry(null);
+  };
+
+  const handleUpdateSuccess = () => {
+    onSuccess?.();
+  };
   const getStatusBadge = (status: string) => {
     const baseClass = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium';
 
@@ -18,16 +37,9 @@ export function DeliveryTable({ entries, onDelete, isLoading = false }: Delivery
         return <span className={`${baseClass} bg-green-100 text-green-800`}>● Sent</span>;
       case 'pending':
         return <span className={`${baseClass} bg-amber-100 text-amber-800`}>● Pending</span>;
-      case 'failed':
-        return <span className={`${baseClass} bg-red-100 text-red-800`}>● Failed</span>;
       default:
         return <span className={`${baseClass} bg-gray-100 text-gray-800`}>● Unknown</span>;
     }
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   };
 
   const formatDateOfBirth = (dateString: string) => {
@@ -88,18 +100,18 @@ export function DeliveryTable({ entries, onDelete, isLoading = false }: Delivery
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
                       <span className="text-sm font-semibold text-blue-700">
-                        {entry.fullName.charAt(0).toUpperCase()}
-                        {entry.fullName.split(' ')[1]?.charAt(0).toUpperCase() || entry.fullName.charAt(1).toUpperCase()}
+                        {entry.full_name.charAt(0).toUpperCase()}
+                        {entry.full_name.split(' ')[1]?.charAt(0).toUpperCase() || entry.full_name.charAt(1).toUpperCase()}
                       </span>
                     </div>
-                    <span className="font-medium text-gray-900">{entry.fullName}</span>
+                    <span className="font-medium text-gray-900">{entry.full_name}</span>
                   </div>
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-600">{entry.phoneNumber}</td>
-                <td className="px-6 py-4 text-sm text-gray-600">{formatDateOfBirth(entry.dateOfBirth)}</td>
+                <td className="px-6 py-4 text-sm text-gray-600">{entry.phone_number}</td>
+                <td className="px-6 py-4 text-sm text-gray-600">{formatDateOfBirth(entry.date_of_birth)}</td>
                 <td className="px-6 py-4 text-sm text-gray-600">
-                  <div className="max-w-xs truncate" title={entry.customMessage}>
-                    {entry.customMessage}
+                  <div className="max-w-xs truncate" title={entry.custom_message}>
+                    {entry.custom_message}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">{getStatusBadge(entry.status)}</td>
@@ -107,10 +119,7 @@ export function DeliveryTable({ entries, onDelete, isLoading = false }: Delivery
                   <button
                     className="p-2 text-gray-400 hover:text-blue-600 transition rounded hover:bg-blue-50"
                     title="Update entry"
-                    onClick={() => {
-                      // TODO: Implement update
-                      console.log('Update entry:', entry.id);
-                    }}
+                    onClick={() => handleEditClick(entry)}
                   >
                     <Edit className="w-4 h-4" />
                   </button>
@@ -129,6 +138,13 @@ export function DeliveryTable({ entries, onDelete, isLoading = false }: Delivery
           </tbody>
         </table>
       </div>
+
+      <EditEntryModal 
+        entry={selectedEntry}
+        isOpen={isEditModalOpen}
+        onClose={handleCloseModal}
+        onSuccess={handleUpdateSuccess}
+      />
     </div>
   );
 }

@@ -1,51 +1,63 @@
 'use client';
 
 import { useState } from 'react';
-import { Calendar } from 'lucide-react';
+import { Calendar, AlertCircle, CheckCircle } from 'lucide-react';
+import { createEntryAction } from '@/app/dashboard/actions';
 import type { CreateEntryPayload } from '@/lib/types/dashboard';
 
 interface NewEntryFormProps {
-  onSubmit: (data: CreateEntryPayload) => void;
-  isLoading?: boolean;
+  onSuccess?: () => void;
 }
 
-export function NewEntryForm({ onSubmit, isLoading = false }: NewEntryFormProps) {
+export function NewEntryForm({ onSuccess }: NewEntryFormProps) {
   const [formData, setFormData] = useState<CreateEntryPayload>({
-    fullName: '',
-    phoneNumber: '',
-    dateOfBirth: '',
-    customMessage: 'Happy Birthday! Hope you have a fantastic day filled with joy and celebration...',
+    full_name: '',
+    phone_number: '',
+    date_of_birth: '',
+    custom_message: 'Happy Birthday! Hope you have a fantastic day filled with joy and celebration...',
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [generalError, setGeneralError] = useState('');
+
+  const countWords = (text: string): number => {
+    return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+  };
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = 'Full name is required';
+    if (!formData.full_name.trim()) {
+      newErrors.full_name = 'Full name is required';
     }
 
-    if (!formData.phoneNumber.trim()) {
-      newErrors.phoneNumber = 'Phone number is required';
-    } else if (!/^[\d\s\-\+\(\)]{10,}$/.test(formData.phoneNumber)) {
-      newErrors.phoneNumber = 'Please enter a valid phone number';
+    if (!formData.phone_number.trim()) {
+      newErrors.phone_number = 'Phone number is required';
+    } else if (!/^[\d\s\-\+\(\)]{10,}$/.test(formData.phone_number)) {
+      newErrors.phone_number = 'Please enter a valid phone number';
     }
 
-    if (!formData.dateOfBirth) {
-      newErrors.dateOfBirth = 'Date of birth is required';
+    if (!formData.date_of_birth) {
+      newErrors.date_of_birth = 'Date of birth is required';
     } else {
-      const dob = new Date(formData.dateOfBirth);
+      const dob = new Date(formData.date_of_birth);
       const today = new Date();
       if (dob > today) {
-        newErrors.dateOfBirth = 'Date of birth cannot be in the future';
+        newErrors.date_of_birth = 'Date of birth cannot be in the future';
       }
     }
 
-    if (!formData.customMessage.trim()) {
-      newErrors.customMessage = 'Custom message is required';
-    } else if (formData.customMessage.length < 10) {
-      newErrors.customMessage = 'Message must be at least 10 characters';
+    if (!formData.custom_message.trim()) {
+      newErrors.custom_message = 'Custom message is required';
+    } else if (formData.custom_message.length < 10) {
+      newErrors.custom_message = 'Message must be at least 10 characters';
+    } else {
+      const wordCount = countWords(formData.custom_message);
+      if (wordCount > 300) {
+        newErrors.custom_message = `Message exceeds 300 words (currently ${wordCount} words)`;
+      }
     }
 
     setErrors(newErrors);
@@ -67,17 +79,68 @@ export function NewEntryForm({ onSubmit, isLoading = false }: NewEntryFormProps)
         [name]: '',
       }));
     }
+    // Clear success message
+    if (successMessage) {
+      setSuccessMessage('');
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
-      onSubmit(formData);
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsLoading(true);
+    setGeneralError('');
+    setSuccessMessage('');
+
+    try {
+      const result = await createEntryAction(formData);
+
+      if (result.error) {
+        setGeneralError(result.error);
+      } else if (result.data) {
+        setSuccessMessage('✓ Record saved successfully!');
+        // Reset form
+        setFormData({
+          full_name: '',
+          phone_number: '',
+          date_of_birth: '',
+          custom_message: 'Happy Birthday! Hope you have a fantastic day filled with joy and celebration...',
+        });
+        // Call callback after success
+        setTimeout(() => {
+          onSuccess?.();
+        }, 1500);
+      }
+    } catch (error) {
+      setGeneralError('An unexpected error occurred. Please try again.');
+      console.error('Form submission error:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Success Alert */}
+      {successMessage && (
+        <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-lg">
+          <CheckCircle className="w-5 h-5 text-green-600" />
+          <p className="text-sm text-green-700">{successMessage}</p>
+        </div>
+      )}
+
+      {/* Error Alert */}
+      {generalError && (
+        <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <AlertCircle className="w-5 h-5 text-red-600" />
+          <p className="text-sm text-red-700">{generalError}</p>
+        </div>
+      )}
+
       {/* Full Name */}
       <div>
         <label className="block text-sm font-medium text-gray-900 mb-2">
@@ -85,36 +148,38 @@ export function NewEntryForm({ onSubmit, isLoading = false }: NewEntryFormProps)
         </label>
         <input
           type="text"
-          name="fullName"
-          value={formData.fullName}
+          name="full_name"
+          value={formData.full_name}
           onChange={handleChange}
           placeholder="John Doe"
-          className={`w-full px-4 py-2.5 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
-            errors.fullName ? 'border-red-500' : 'border-gray-300'
+          disabled={isLoading}
+          className={`w-full px-4 py-2.5 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition disabled:bg-gray-100 ${
+            errors.full_name ? 'border-red-500' : 'border-gray-300'
           }`}
         />
-        {errors.fullName && (
-          <p className="mt-1 text-sm text-red-600">{errors.fullName}</p>
+        {errors.full_name && (
+          <p className="mt-1 text-sm text-red-600">{errors.full_name}</p>
         )}
       </div>
 
       {/* Phone Number */}
       <div>
         <label className="block text-sm font-medium text-gray-900 mb-2">
-          Phone Number *
+          Phone Number * (Must be globally unique)
         </label>
         <input
           type="tel"
-          name="phoneNumber"
-          value={formData.phoneNumber}
+          name="phone_number"
+          value={formData.phone_number}
           onChange={handleChange}
           placeholder="+1 (555) 000-0000"
-          className={`w-full px-4 py-2.5 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
-            errors.phoneNumber ? 'border-red-500' : 'border-gray-300'
+          disabled={isLoading}
+          className={`w-full px-4 py-2.5 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition disabled:bg-gray-100 ${
+            errors.phone_number ? 'border-red-500' : 'border-gray-300'
           }`}
         />
-        {errors.phoneNumber && (
-          <p className="mt-1 text-sm text-red-600">{errors.phoneNumber}</p>
+        {errors.phone_number && (
+          <p className="mt-1 text-sm text-red-600">{errors.phone_number}</p>
         )}
       </div>
 
@@ -122,45 +187,48 @@ export function NewEntryForm({ onSubmit, isLoading = false }: NewEntryFormProps)
       <div>
         <label className="block text-sm font-medium text-gray-900 mb-2">
           Date of Birth *
+          <span className="text-xs text-gray-500 font-normal">(Format: DD/MM/YYYY)</span>
         </label>
         <div className="relative">
           <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
           <input
             type="date"
-            name="dateOfBirth"
-            value={formData.dateOfBirth}
+            name="date_of_birth"
+            value={formData.date_of_birth}
             onChange={handleChange}
-            className={`w-full pl-10 pr-4 py-2.5 border rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
-              errors.dateOfBirth ? 'border-red-500' : 'border-gray-300'
+            disabled={isLoading}
+            className={`w-full pl-10 pr-4 py-2.5 border rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition disabled:bg-gray-100 ${
+              errors.date_of_birth ? 'border-red-500' : 'border-gray-300'
             }`}
           />
         </div>
-        {errors.dateOfBirth && (
-          <p className="mt-1 text-sm text-red-600">{errors.dateOfBirth}</p>
+        {errors.date_of_birth && (
+          <p className="mt-1 text-sm text-red-600">{errors.date_of_birth}</p>
         )}
       </div>
 
       {/* Custom Message */}
       <div>
         <label className="block text-sm font-medium text-gray-900 mb-2">
-          Custom Message *
+          Custom Message * (Max 300 words)
         </label>
         <textarea
-          name="customMessage"
-          value={formData.customMessage}
+          name="custom_message"
+          value={formData.custom_message}
           onChange={handleChange}
           placeholder="Enter your custom birthday message..."
           rows={5}
-          className={`w-full px-4 py-2.5 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition resize-none ${
-            errors.customMessage ? 'border-red-500' : 'border-gray-300'
+          disabled={isLoading}
+          className={`w-full px-4 py-2.5 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition resize-none disabled:bg-gray-100 ${
+            errors.custom_message ? 'border-red-500' : 'border-gray-300'
           }`}
         />
         <div className="mt-1 flex justify-between">
-          {errors.customMessage && (
-            <p className="text-sm text-red-600">{errors.customMessage}</p>
+          {errors.custom_message && (
+            <p className="text-sm text-red-600">{errors.custom_message}</p>
           )}
-          <p className="text-xs text-gray-500 ml-auto">
-            {formData.customMessage.length} characters
+          <p className={`text-xs ml-auto ${countWords(formData.custom_message) > 300 ? 'text-red-600 font-semibold' : 'text-gray-500'}`}>
+            {countWords(formData.custom_message)} / 300 words
           </p>
         </div>
       </div>

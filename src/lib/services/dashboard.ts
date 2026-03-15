@@ -16,50 +16,47 @@ import type {
 const MOCK_ENTRIES: RecipientEntry[] = [
   {
     id: '1',
-    fullName: 'John Doe',
-    phoneNumber: '+1 (555) 000-0000',
-    dateOfBirth: '1995-10-24',
-    customMessage: 'Happy Birthday! Hope your day is as amazing...',
+    user_id: 'user-1',
+    full_name: 'John Doe',
+    phone_number: '+1 (555) 000-0000',
+    date_of_birth: '1995-10-24',
+    custom_message: 'Happy Birthday! Hope your day is as amazing...',
     status: 'sent',
-    sentDate: '2024-10-24T10:30:00Z',
-    createdAt: '2024-10-20T08:00:00Z',
-    updatedAt: '2024-10-24T10:30:00Z',
-    userId: 'user-1',
+    created_at: '2024-10-20T08:00:00Z',
+    updated_at: '2024-10-24T10:30:00Z',
   },
   {
     id: '2',
-    fullName: 'Jane Smith',
-    phoneNumber: '+1 987 654 321',
-    dateOfBirth: '1985-11-02',
-    customMessage: 'Have a great day Jane! Enjoy your special celebration...',
+    user_id: 'user-1',
+    full_name: 'Jane Smith',
+    phone_number: '+1 987 654 321',
+    date_of_birth: '1985-11-02',
+    custom_message: 'Have a great day Jane! Enjoy your special celebration...',
     status: 'sent',
-    sentDate: '2024-11-02T09:15:00Z',
-    createdAt: '2024-10-28T08:00:00Z',
-    updatedAt: '2024-11-02T09:15:00Z',
-    userId: 'user-1',
+    created_at: '2024-10-28T08:00:00Z',
+    updated_at: '2024-11-02T09:15:00Z',
   },
   {
     id: '3',
-    fullName: 'Robert Brown',
-    phoneNumber: '+1 555 012 345',
-    dateOfBirth: '1992-10-22',
-    customMessage: 'Best wishes Robert! May this year bring you m...',
+    user_id: 'user-1',
+    full_name: 'Robert Brown',
+    phone_number: '+1 555 012 345',
+    date_of_birth: '1992-10-22',
+    custom_message: 'Best wishes Robert! May this year bring you m...',
     status: 'pending',
-    createdAt: '2024-10-15T08:00:00Z',
-    updatedAt: '2024-10-15T08:00:00Z',
-    userId: 'user-1',
+    created_at: '2024-10-15T08:00:00Z',
+    updated_at: '2024-10-15T08:00:00Z',
   },
   {
     id: '4',
-    fullName: 'Emily Davis',
-    phoneNumber: '+1 444 789 012',
-    dateOfBirth: '1988-12-15',
-    customMessage: 'Cheers to you Emily! Another year of wonderful...',
+    user_id: 'user-1',
+    full_name: 'Emily Davis',
+    phone_number: '+1 444 789 012',
+    date_of_birth: '1988-12-15',
+    custom_message: 'Cheers to you Emily! Another year of wonderful...',
     status: 'sent',
-    sentDate: '2024-12-15T12:00:00Z',
-    createdAt: '2024-11-10T08:00:00Z',
-    updatedAt: '2024-12-15T12:00:00Z',
-    userId: 'user-1',
+    created_at: '2024-11-10T08:00:00Z',
+    updated_at: '2024-12-15T12:00:00Z',
   },
 ];
 
@@ -81,8 +78,8 @@ export async function getDashboardData(
     if (searchQuery) {
       filteredEntries = filteredEntries.filter(
         (entry) =>
-          entry.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          entry.phoneNumber.includes(searchQuery)
+          entry.full_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          entry.phone_number.includes(searchQuery)
       );
     }
 
@@ -143,11 +140,14 @@ export async function createEntry(payload: CreateEntryPayload): Promise<Recipien
 
     const newEntry: RecipientEntry = {
       id: Date.now().toString(),
-      ...payload,
+      user_id: 'user-1',
+      full_name: payload.full_name,
+      phone_number: payload.phone_number,
+      date_of_birth: payload.date_of_birth,
+      custom_message: payload.custom_message,
       status: 'pending',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      userId: 'user-1', // TODO: Get from session
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     };
 
     return newEntry;
@@ -176,7 +176,7 @@ export async function updateEntry(payload: UpdateEntryPayload): Promise<Recipien
     const updatedEntry: RecipientEntry = {
       ...entry,
       ...payload,
-      updatedAt: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     };
 
     return updatedEntry;
@@ -214,8 +214,8 @@ export async function searchEntries(query: string): Promise<RecipientEntry[]> {
     // TODO: Replace with actual API call
     const results = MOCK_ENTRIES.filter(
       (entry) =>
-        entry.fullName.toLowerCase().includes(query.toLowerCase()) ||
-        entry.phoneNumber.includes(query)
+        entry.full_name.toLowerCase().includes(query.toLowerCase()) ||
+        entry.phone_number.includes(query)
     );
 
     return results;
