@@ -89,7 +89,7 @@ export function NewEntryForm({ onSubmit, isLoading = false }: NewEntryFormProps)
           value={formData.fullName}
           onChange={handleChange}
           placeholder="John Doe"
-          className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
+          className={`w-full px-4 py-2.5 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
             errors.fullName ? 'border-red-500' : 'border-gray-300'
           }`}
         />
@@ -109,7 +109,7 @@ export function NewEntryForm({ onSubmit, isLoading = false }: NewEntryFormProps)
           value={formData.phoneNumber}
           onChange={handleChange}
           placeholder="+1 (555) 000-0000"
-          className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
+          className={`w-full px-4 py-2.5 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
             errors.phoneNumber ? 'border-red-500' : 'border-gray-300'
           }`}
         />
@@ -130,7 +130,7 @@ export function NewEntryForm({ onSubmit, isLoading = false }: NewEntryFormProps)
             name="dateOfBirth"
             value={formData.dateOfBirth}
             onChange={handleChange}
-            className={`w-full pl-10 pr-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
+            className={`w-full pl-10 pr-4 py-2.5 border rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
               errors.dateOfBirth ? 'border-red-500' : 'border-gray-300'
             }`}
           />
@@ -151,7 +151,7 @@ export function NewEntryForm({ onSubmit, isLoading = false }: NewEntryFormProps)
           onChange={handleChange}
           placeholder="Enter your custom birthday message..."
           rows={5}
-          className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition resize-none ${
+          className={`w-full px-4 py-2.5 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition resize-none ${
             errors.customMessage ? 'border-red-500' : 'border-gray-300'
           }`}
         />

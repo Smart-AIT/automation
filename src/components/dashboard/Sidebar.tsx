@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { Send, Plus, LogOut } from 'lucide-react';
 import { usePathname } from 'next/navigation';
@@ -25,14 +26,15 @@ export function Sidebar() {
   return (
     <aside className="w-64 bg-white border-r border-gray-200 min-h-screen flex flex-col">
       {/* Header */}
-      <div className="p-6 border-b border-gray-200">
-        <div className="flex items-center gap-2 mb-2">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold text-lg">A</span>
-          </div>
-          <h1 className="font-bold text-lg text-gray-900">AutoRegards</h1>
-        </div>
-        <p className="text-xs text-gray-500">Automated Birthday Wishes</p>
+      <div className="px-9 py-7 border-b border-gray-200 flex items-center gap-2">
+        <Image
+          src="/ait 2.png"
+          alt="AIT Logo"
+          width={40}
+          height={40}
+          className="rounded-lg"
+        />
+        <h1 className="font-bold text-2xl text-gray-900">AutoRegards</h1>
       </div>
 
       {/* Navigation */}

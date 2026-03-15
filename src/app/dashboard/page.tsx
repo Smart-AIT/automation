@@ -3,7 +3,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import {
   DashboardHeader,
-  SearchBar,
   StatisticsCards,
   DeliveryTable,
   Pagination,
@@ -85,24 +84,17 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white border-b border-gray-200">
-        <div className="px-8 py-6">
+        <div className="px-8 py-5.5">
           <DashboardHeader
-            title="Sent Dashboard"
-            subtitle="Overview of your successful birthday campaigns"
+            title="Dashboard"
+            // subtitle="Overview of your successful birthday campaigns"
+            onSearch={handleSearch}
           />
         </div>
       </div>
 
       {/* Main Content */}
       <div className="px-8 py-8">
-        {/* Search Bar */}
-        <div className="mb-8 max-w-md">
-          <SearchBar
-            placeholder="Search contacts..."
-            onSearch={handleSearch}
-          />
-        </div>
-
         {/* Statistics Cards */}
         <StatisticsCards statistics={dashboardData.statistics} />
 

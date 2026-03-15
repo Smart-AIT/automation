@@ -1,6 +1,6 @@
 'use client';
 
-import { Trash2, ExternalLink } from 'lucide-react';
+import { Trash2, Edit } from 'lucide-react';
 import type { RecipientEntry } from '@/lib/types/dashboard';
 
 interface DeliveryTableProps {
@@ -73,8 +73,11 @@ export function DeliveryTable({ entries, onDelete, isLoading = false }: Delivery
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider">
-                Actions
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
+                Update
+              </th>
+              <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
+                Delete
               </th>
             </tr>
           </thead>
@@ -99,27 +102,27 @@ export function DeliveryTable({ entries, onDelete, isLoading = false }: Delivery
                     {entry.customMessage}
                   </div>
                 </td>
-                <td className="px-6 py-4">{getStatusBadge(entry.status)}</td>
-                <td className="px-6 py-4 text-right">
-                  <div className="flex justify-end gap-2">
-                    <button
-                      className="p-2 text-gray-400 hover:text-gray-600 transition rounded hover:bg-gray-100"
-                      title="View details"
-                      onClick={() => {
-                        // TODO: Implement view details
-                        console.log('View details for:', entry.id);
-                      }}
-                    >
-                      <ExternalLink className="w-4 h-4" />
-                    </button>
-                    <button
-                      className="p-2 text-gray-400 hover:text-red-600 transition rounded hover:bg-red-50"
-                      title="Delete entry"
-                      onClick={() => onDelete(entry.id)}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
+                <td className="px-6 py-4 whitespace-nowrap">{getStatusBadge(entry.status)}</td>
+                <td className="px-6 py-4 text-center">
+                  <button
+                    className="p-2 text-gray-400 hover:text-blue-600 transition rounded hover:bg-blue-50"
+                    title="Update entry"
+                    onClick={() => {
+                      // TODO: Implement update
+                      console.log('Update entry:', entry.id);
+                    }}
+                  >
+                    <Edit className="w-4 h-4" />
+                  </button>
+                </td>
+                <td className="px-6 py-4 text-center">
+                  <button
+                    className="p-2 text-gray-400 hover:text-red-600 transition rounded hover:bg-red-50"
+                    title="Delete entry"
+                    onClick={() => onDelete(entry.id)}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </td>
               </tr>
             ))}
