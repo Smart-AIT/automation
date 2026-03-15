@@ -119,30 +119,28 @@ export function EditEntryModal({ entry, isOpen, onClose, onSuccess }: EditEntryM
   if (!isOpen || !entry) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-linear-to-br from-white/40 to-white/20 backdrop-blur-2xl max-w-md w-full mx-4 max-h-screen overflow-y-auto rounded-3xl shadow-2xl border-2 border-white/60" style={{
-        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37), inset 0 1px 1px 0 rgba(255, 255, 255, 0.6), 0 0 50px 0 rgba(59, 130, 246, 0.1)'
-      }}>
+    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 max-h-screen overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b-2 border-white/30 sticky top-0 bg-white/10 backdrop-blur-lg rounded-t-3xl">
-          <h2 className="text-2xl font-bold bg-linear-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">Edit Entry</h2>
+        <div className="flex items-center justify-between p-6 border-b border-gray-200 sticky top-0 bg-white rounded-t-2xl">
+          <h2 className="text-xl font-bold text-gray-900">Edit Entry</h2>
           <button
             onClick={onClose}
-            className="p-1 hover:bg-white/40 rounded-full transition duration-200"
+            className="p-1 hover:bg-gray-100 rounded-full transition"
             disabled={isLoading}
           >
-            <X className="w-6 h-6 text-gray-800" />
+            <X className="w-5 h-5 text-gray-600" />
           </button>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-8 bg-linear-to-b from-white/20 to-white/10">
+        <form onSubmit={handleSubmit} className="p-6">
           {message && (
             <div
-              className={`mb-4 p-4 rounded-2xl text-sm font-medium border-2 backdrop-blur ${
+              className={`mb-4 p-3 rounded-lg text-sm font-medium ${
                 message.type === 'success'
-                  ? 'bg-green-100/40 text-green-900 border-green-300/60 shadow-md shadow-green-400/20'
-                  : 'bg-red-100/40 text-red-900 border-red-300/60 shadow-md shadow-red-400/20'
+                  ? 'bg-green-50 text-green-800 border border-green-200'
+                  : 'bg-red-50 text-red-800 border border-red-200'
               }`}
             >
               {message.text}
@@ -150,7 +148,7 @@ export function EditEntryModal({ entry, isOpen, onClose, onSuccess }: EditEntryM
           )}
 
           {/* Full Name */}
-          <div className="mb-5">
+          <div className="mb-4">
             <label htmlFor="full_name" className="block text-sm font-semibold text-gray-900 mb-2">
               Full Name *
             </label>
@@ -160,17 +158,17 @@ export function EditEntryModal({ entry, isOpen, onClose, onSuccess }: EditEntryM
               name="full_name"
               value={formData.full_name}
               onChange={handleInputChange}
-              className={`w-full px-4 py-3 border-2 rounded-xl text-sm bg-white/40 backdrop-blur text-gray-900 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white/60 transition shadow-lg shadow-blue-400/10 ${
-                errors.full_name ? 'border-red-400 focus:ring-red-400' : 'border-white/50 hover:border-white/70'
+              className={`w-full px-4 py-2 border rounded-lg text-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                errors.full_name ? 'border-red-500' : 'border-gray-300'
               }`}
               disabled={isLoading}
               placeholder="Enter full name"
             />
-            {errors.full_name && <p className="mt-2 text-xs text-red-700 font-semibold">{errors.full_name}</p>}
+            {errors.full_name && <p className="mt-1 text-xs text-red-600">{errors.full_name}</p>}
           </div>
 
           {/* Phone Number */}
-          <div className="mb-5">
+          <div className="mb-4">
             <label htmlFor="phone_number" className="block text-sm font-semibold text-gray-900 mb-2">
               Phone Number *
             </label>
@@ -180,17 +178,17 @@ export function EditEntryModal({ entry, isOpen, onClose, onSuccess }: EditEntryM
               name="phone_number"
               value={formData.phone_number}
               onChange={handleInputChange}
-              className={`w-full px-4 py-3 border-2 rounded-xl text-sm bg-white/40 backdrop-blur text-gray-900 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white/60 transition shadow-lg shadow-blue-400/10 ${
-                errors.phone_number ? 'border-red-400 focus:ring-red-400' : 'border-white/50 hover:border-white/70'
+              className={`w-full px-4 py-2 border rounded-lg text-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                errors.phone_number ? 'border-red-500' : 'border-gray-300'
               }`}
               disabled={isLoading}
               placeholder="Enter phone number"
             />
-            {errors.phone_number && <p className="mt-2 text-xs text-red-700 font-semibold">{errors.phone_number}</p>}
+            {errors.phone_number && <p className="mt-1 text-xs text-red-600">{errors.phone_number}</p>}
           </div>
 
           {/* Date of Birth */}
-          <div className="mb-5">
+          <div className="mb-4">
             <label htmlFor="date_of_birth" className="block text-sm font-semibold text-gray-900 mb-2">
               Date of Birth (DD/MM/YYYY) *
             </label>
@@ -200,12 +198,12 @@ export function EditEntryModal({ entry, isOpen, onClose, onSuccess }: EditEntryM
               name="date_of_birth"
               value={formData.date_of_birth}
               onChange={handleInputChange}
-              className={`w-full px-4 py-3 border-2 rounded-xl text-sm bg-white/40 backdrop-blur text-gray-900 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white/60 transition shadow-lg shadow-blue-400/10 ${
-                errors.date_of_birth ? 'border-red-400 focus:ring-red-400' : 'border-white/50 hover:border-white/70'
+              className={`w-full px-4 py-2 border rounded-lg text-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                errors.date_of_birth ? 'border-red-500' : 'border-gray-300'
               }`}
               disabled={isLoading}
             />
-            {errors.date_of_birth && <p className="mt-2 text-xs text-red-700 font-semibold">{errors.date_of_birth}</p>}
+            {errors.date_of_birth && <p className="mt-1 text-xs text-red-600">{errors.date_of_birth}</p>}
           </div>
 
           {/* Custom Message */}
@@ -219,33 +217,33 @@ export function EditEntryModal({ entry, isOpen, onClose, onSuccess }: EditEntryM
               value={formData.custom_message}
               onChange={handleInputChange}
               rows={4}
-              className={`w-full px-4 py-3 border-2 rounded-xl text-sm bg-white/40 backdrop-blur text-gray-900 placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:bg-white/60 transition resize-none shadow-lg shadow-blue-400/10 ${
-                errors.custom_message ? 'border-red-400 focus:ring-red-400' : 'border-white/50 hover:border-white/70'
+              className={`w-full px-4 py-2 border rounded-lg text-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none ${
+                errors.custom_message ? 'border-red-500' : 'border-gray-300'
               }`}
               disabled={isLoading}
               placeholder="Enter custom message"
             />
-            <div className="flex justify-between items-center mt-3">
-              <span className={`text-xs font-semibold ${wordCount > 300 ? 'text-red-700' : 'text-gray-700'}`}>
+            <div className="flex justify-between items-center mt-2">
+              <span className={`text-xs font-medium ${wordCount > 300 ? 'text-red-600' : 'text-gray-600'}`}>
                 {wordCount} / 300 words
               </span>
             </div>
-            {errors.custom_message && <p className="mt-2 text-xs text-red-700 font-semibold">{errors.custom_message}</p>}
+            {errors.custom_message && <p className="mt-1 text-xs text-red-600">{errors.custom_message}</p>}
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-3 pt-4 border-t-2 border-white/30">
+          <div className="flex gap-3 pt-4 border-t border-gray-200">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-3 border-2 border-white/50 rounded-xl text-sm font-semibold text-gray-900 hover:bg-white/20 hover:border-white/70 backdrop-blur transition shadow-lg hover:shadow-xl disabled:opacity-50"
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition disabled:opacity-50"
               disabled={isLoading}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-3 bg-linear-to-r from-blue-500 to-blue-600 backdrop-blur text-white rounded-xl text-sm font-semibold hover:from-blue-600 hover:to-blue-700 transition shadow-lg hover:shadow-xl hover:shadow-blue-400/50 disabled:opacity-50 border-2 border-blue-400/50"
+              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition disabled:opacity-50"
               disabled={isLoading}
             >
               {isLoading ? 'Updating...' : 'Update'}
