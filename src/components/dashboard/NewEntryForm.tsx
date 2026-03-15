@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Calendar, AlertCircle, CheckCircle } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 import { createEntryAction } from '@/app/dashboard/actions';
+import { useToast } from '@/context/ToastContext';
 import type { CreateEntryPayload } from '@/lib/types/dashboard';
 
 interface NewEntryFormProps {
@@ -10,6 +11,7 @@ interface NewEntryFormProps {
 }
 
 export function NewEntryForm({ onSuccess }: NewEntryFormProps) {
+  const { showToast } = useToast();
   const [formData, setFormData] = useState<CreateEntryPayload>({
     full_name: '',
     phone_number: '',
@@ -19,8 +21,6 @@ export function NewEntryForm({ onSuccess }: NewEntryFormProps) {
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
-  const [generalError, setGeneralError] = useState('');
 
   const countWords = (text: string): number => {
     return text.trim().split(/\s+/).filter(word => word.length > 0).length;
@@ -79,10 +79,6 @@ export function NewEntryForm({ onSuccess }: NewEntryFormProps) {
         [name]: '',
       }));
     }
-    // Clear success message
-    if (successMessage) {
-      setSuccessMessage('');
-    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -93,16 +89,14 @@ export function NewEntryForm({ onSuccess }: NewEntryFormProps) {
     }
 
     setIsLoading(true);
-    setGeneralError('');
-    setSuccessMessage('');
 
     try {
       const result = await createEntryAction(formData);
 
       if (result.error) {
-        setGeneralError(result.error);
+        showToast(result.error, 'error');
       } else if (result.data) {
-        setSuccessMessage('✓ Record saved successfully!');
+        showToast('Record saved successfully!', 'success');
         // Reset form
         setFormData({
           full_name: '',
@@ -113,10 +107,10 @@ export function NewEntryForm({ onSuccess }: NewEntryFormProps) {
         // Call callback after success
         setTimeout(() => {
           onSuccess?.();
-        }, 1500);
+        }, 500);
       }
     } catch (error) {
-      setGeneralError('An unexpected error occurred. Please try again.');
+      showToast('An unexpected error occurred. Please try again.', 'error');
       console.error('Form submission error:', error);
     } finally {
       setIsLoading(false);
@@ -125,22 +119,6 @@ export function NewEntryForm({ onSuccess }: NewEntryFormProps) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Success Alert */}
-      {successMessage && (
-        <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-lg">
-          <CheckCircle className="w-5 h-5 text-green-600" />
-          <p className="text-sm text-green-700">{successMessage}</p>
-        </div>
-      )}
-
-      {/* Error Alert */}
-      {generalError && (
-        <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <AlertCircle className="w-5 h-5 text-red-600" />
-          <p className="text-sm text-red-700">{generalError}</p>
-        </div>
-      )}
-
       {/* Full Name */}
       <div>
         <label className="block text-sm font-medium text-gray-900 mb-2">

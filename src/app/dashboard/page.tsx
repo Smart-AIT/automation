@@ -8,9 +8,11 @@ import {
   Pagination,
 } from '@/components/dashboard';
 import { getEntriesAction, deleteEntryAction } from '@/app/dashboard/actions';
+import { useToast } from '@/context/ToastContext';
 import type { RecipientEntry, DashboardResponse } from '@/lib/types/dashboard';
 
 export default function DashboardPage() {
+  const { showToast } = useToast();
   const [dashboardData, setDashboardData] = useState<DashboardResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -67,20 +69,21 @@ export default function DashboardPage() {
           setIsDeleting(true);
           const result = await deleteEntryAction(id);
           if (result.error) {
-            alert('Failed to delete entry: ' + result.error);
+            showToast('Failed to delete entry: ' + result.error, 'error');
           } else {
+            showToast('Entry deleted successfully!', 'success');
             // Refresh data after delete
             fetchData(currentPage, searchQuery);
           }
         } catch (error) {
           console.error('Error deleting entry:', error);
-          alert('An error occurred while deleting the entry');
+          showToast('An error occurred while deleting the entry', 'error');
         } finally {
           setIsDeleting(false);
         }
       }
     },
-    [currentPage, searchQuery, fetchData]
+    [currentPage, searchQuery, fetchData, showToast]
   );
 
   if (isLoading && !dashboardData) {

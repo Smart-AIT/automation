@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { updateEntryAction } from '@/app/dashboard/actions';
+import { useToast } from '@/context/ToastContext';
 import type { RecipientEntry } from '@/lib/types/dashboard';
 
 interface EditEntryModalProps {
@@ -13,6 +14,7 @@ interface EditEntryModalProps {
 }
 
 export function EditEntryModal({ entry, isOpen, onClose, onSuccess }: EditEntryModalProps) {
+  const { showToast } = useToast();
   const [formData, setFormData] = useState({
     full_name: '',
     phone_number: '',
@@ -23,7 +25,6 @@ export function EditEntryModal({ entry, isOpen, onClose, onSuccess }: EditEntryM
   const [wordCount, setWordCount] = useState(0);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   useEffect(() => {
     if (entry && isOpen) {
@@ -35,7 +36,6 @@ export function EditEntryModal({ entry, isOpen, onClose, onSuccess }: EditEntryM
       });
       setWordCount(entry.custom_message.split(/\s+/).filter(word => word.length > 0).length);
       setErrors({});
-      setMessage(null);
     }
   }, [entry, isOpen]);
 
@@ -89,7 +89,6 @@ export function EditEntryModal({ entry, isOpen, onClose, onSuccess }: EditEntryM
     if (!entry) return;
 
     setIsLoading(true);
-    setMessage(null);
 
     try {
       const result = await updateEntryAction({
@@ -101,16 +100,16 @@ export function EditEntryModal({ entry, isOpen, onClose, onSuccess }: EditEntryM
       });
 
       if (result.error) {
-        setMessage({ type: 'error', text: result.error });
+        showToast(result.error, 'error');
       } else {
-        setMessage({ type: 'success', text: 'Entry updated successfully!' });
+        showToast('Entry updated successfully!', 'success');
         setTimeout(() => {
           onSuccess();
           onClose();
-        }, 1000);
+        }, 500);
       }
     } catch (error) {
-      setMessage({ type: 'error', text: 'Failed to update entry. Please try again.' });
+      showToast('Failed to update entry. Please try again.', 'error');
     } finally {
       setIsLoading(false);
     }
@@ -135,18 +134,6 @@ export function EditEntryModal({ entry, isOpen, onClose, onSuccess }: EditEntryM
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6">
-          {message && (
-            <div
-              className={`mb-4 p-3 rounded-lg text-sm font-medium ${
-                message.type === 'success'
-                  ? 'bg-green-50 text-green-800 border border-green-200'
-                  : 'bg-red-50 text-red-800 border border-red-200'
-              }`}
-            >
-              {message.text}
-            </div>
-          )}
-
           {/* Full Name */}
           <div className="mb-4">
             <label htmlFor="full_name" className="block text-sm font-semibold text-gray-900 mb-2">
