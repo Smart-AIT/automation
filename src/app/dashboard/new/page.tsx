@@ -74,7 +74,7 @@ export default function NewDataPage() {
             <button
               onClick={() => fileInputRef.current?.click()}
               disabled={isUploading}
-              className='flex items-center gap-2 text-black border border-blue-300 hover:bg-blue-50 p-2 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed'
+              className='flex items-center gap-2 bg-blue-500 text-white border border-blue-600 hover:bg-blue-600 p-2 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed'
             >
               {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
               {isUploading ? 'Uploading...' : 'Upload CSV / XLSX'}
@@ -91,7 +91,7 @@ export default function NewDataPage() {
             <NewEntryForm onSuccess={handleSuccess} />
 
             {/* Instructions */}
-            <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            {/* <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
               <h3 className="text-sm font-semibold text-blue-900 mb-2">📝 Notes:</h3>
               <ul className="text-sm text-blue-800 space-y-1">
                 <li>• Phone numbers must be globally unique</li>
@@ -99,7 +99,7 @@ export default function NewDataPage() {
                 <li>• Custom message supports up to 300 words</li>
                 <li>• All entries start with "pending" status</li>
               </ul>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
