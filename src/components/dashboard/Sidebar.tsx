@@ -34,7 +34,7 @@ export function Sidebar() {
           height={40}
           className="rounded-lg"
         />
-        <h1 className="font-bold text-2xl text-gray-900">AutoRegards</h1>
+        <h1 className="font-bold text-2xl text-gray-900">SendBox</h1>
       </div>
 
       {/* Navigation */}

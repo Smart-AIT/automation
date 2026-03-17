@@ -4,8 +4,8 @@ import { SignUpForm } from '@/components/auth/SignUpForm'
 import { AuthLink } from '@/components/auth/AuthLink'
 
 export const metadata = {
-  title: 'Create Account - Birthday Automation',
-  description: 'Start automating your birthday celebrations today',
+  title: 'SendBox',
+  description: 'Start automating your birthday celebrations with SendBox',
 }
 
 export default function SignUpPage() {

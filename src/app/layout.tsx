@@ -17,6 +17,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "SendBox",
   description: "SendBox",
+  icons: {
+    icon: "/aiticon.png",
+  },
 };
 
 export default function RootLayout({
