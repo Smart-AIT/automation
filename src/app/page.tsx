@@ -5,7 +5,7 @@ export default function Home() {
     <main className="min-h-screen bg-white text-slate-900 selection:bg-blue-100">
       {/* Minimal Header */}
       <nav className="flex items-center justify-between max-w-5xl mx-auto px-6 py-8">
-        <div className="text-lg font-semibold tracking-tight">BirthdayOS</div>
+        <div className="text-lg font-semibold tracking-tight">SendBox</div>
         <div className="flex items-center gap-8">
           <Link href="/auth/sign-in" className="text-sm font-medium text-slate-600 hover:text-black transition">
             Sign in
