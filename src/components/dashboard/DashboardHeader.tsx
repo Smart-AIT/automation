@@ -1,7 +1,9 @@
 'use client';
 
-import { Bell, Search } from 'lucide-react';
-import { useCallback } from 'react';
+import { Bell, Search, X } from 'lucide-react';
+import { useCallback, useState, useEffect } from 'react';
+import type { RecipientEntry } from '@/lib/types/dashboard';
+import { getEntriesAction } from '@/app/dashboard/actions';
 
 interface DashboardHeaderProps {
   title: string;
@@ -10,6 +12,31 @@ interface DashboardHeaderProps {
 }
 
 export function DashboardHeader({ title, subtitle, onSearch }: DashboardHeaderProps) {
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState<RecipientEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Fetch sent entries (notifications)
+  const fetchNotifications = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const response = await getEntriesAction(1, 100, '', 'sent'); // Fetch only "sent" status
+      if (response.entries) {
+        setNotifications(response.entries);
+      }
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (showNotifications) {
+      fetchNotifications();
+    }
+  }, [showNotifications, fetchNotifications]);
+
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       if (onSearch) {
@@ -37,10 +64,49 @@ export function DashboardHeader({ title, subtitle, onSearch }: DashboardHeaderPr
             />
           </div>
         )}
-        <button className="p-2.5 text-gray-600 hover:bg-gray-100 rounded-lg transition relative">
-          <Bell className="w-6 h-6" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-        </button>
+        
+        {/* Bell Notification */}
+        <div className="relative">
+          <button
+            onClick={() => setShowNotifications(!showNotifications)}
+            className="p-2.5 text-gray-600 hover:bg-gray-100 rounded-lg transition relative"
+          >
+            <Bell className="w-6 h-6" />
+            {notifications.length > 0 && (
+              <span className="absolute top-1 right-1 flex items-center justify-center w-5 h-5 bg-red-500 text-white text-xs rounded-full font-bold">
+                {notifications.length}
+              </span>
+            )}
+          </button>
+
+          {/* Dropdown */}
+          {showNotifications && (
+            <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50 max-h-96 overflow-y-auto">
+              <div className="p-4 border-b flex justify-between items-center">
+                <h3 className="font-semibold text-gray-900">Sent Wishes ({notifications.length})</h3>
+                <button onClick={() => setShowNotifications(false)}>
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              
+              {isLoading ? (
+                <div className="p-4 text-center text-gray-500">Loading...</div>
+              ) : notifications.length === 0 ? (
+                <div className="p-4 text-center text-gray-500">No sent wishes yet</div>
+              ) : (
+                <div className="divide-y">
+                  {notifications.map((notif) => (
+                    <div key={notif.id} className="p-3 hover:bg-gray-50 cursor-pointer">
+                      <p className="font-medium text-sm text-gray-900">{notif.full_name}</p>
+                      <p className="text-xs text-gray-600">📱 {notif.phone_number}</p>
+                      <p className="text-xs text-green-600 mt-1">✓ Wish sent</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
