@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Birthday Automation",
-  description: "Automate your birthday celebrations with Birthday Automation",
+  title: "SendBox",
+  description: "SendBox",
 };
 
 export default function RootLayout({
