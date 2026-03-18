@@ -69,6 +69,7 @@ export async function GET(request: Request) {
 
         if (!response.ok) {
           console.error(`Failed to send message to ${entry.phone_number}:`, responseData);
+          console.error('Full error response:', JSON.stringify(responseData, null, 2));
           errorCount++;
           continue; // Skip database update if message failed to send
         }

@@ -97,7 +97,7 @@ export const SignUpForm: React.FC = () => {
         name="fullName"
         type="text"
         label="Full Name"
-        placeholder="John Doe"
+        placeholder="example"
         value={formData.fullName}
         onChange={handleChange}
         error={errors.fullName}

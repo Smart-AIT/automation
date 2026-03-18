@@ -17,7 +17,7 @@ const MOCK_ENTRIES: RecipientEntry[] = [
   {
     id: '1',
     user_id: 'user-1',
-    full_name: 'John Doe',
+    full_name: 'example',
     phone_number: '+1 (555) 000-0000',
     date_of_birth: '1995-10-24',
     custom_message: 'Happy Birthday! Hope your day is as amazing...',
