@@ -18,7 +18,6 @@ export function DashboardHeader({ title, subtitle, onSearch }: DashboardHeaderPr
 
   // Fetch sent entries (notifications)
   const fetchNotifications = useCallback(async () => {
-    setIsLoading(true);
     try {
       const response = await getEntriesAction(1, 100, '', 'sent'); // Fetch only "sent" status
       if (response.entries) {
@@ -26,14 +25,20 @@ export function DashboardHeader({ title, subtitle, onSearch }: DashboardHeaderPr
       }
     } catch (error) {
       console.error('Error fetching notifications:', error);
-    } finally {
-      setIsLoading(false);
     }
   }, []);
 
+  // Auto-refresh notifications every 5 seconds
+  useEffect(() => {
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 5000);
+    return () => clearInterval(interval);
+  }, [fetchNotifications]);
+
   useEffect(() => {
     if (showNotifications) {
-      fetchNotifications();
+      setIsLoading(true);
+      fetchNotifications().finally(() => setIsLoading(false));
     }
   }, [showNotifications, fetchNotifications]);
 
