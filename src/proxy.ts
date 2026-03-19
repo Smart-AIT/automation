@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -25,17 +25,31 @@ export async function middleware(request: NextRequest) {
     },
   )
 
-  // Refresh session to keep user logged in
-  await supabase.auth.getUser()
+  // 🔥 Check user
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  const path = request.nextUrl.pathname
+
+  // 🚫 Not logged in → block dashboard
+  if (!user && path.startsWith('/dashboard')) {
+    return NextResponse.redirect(new URL('/auth/sign-in', request.url))
+  }
+
+  // 🔁 Logged in → block login page
+  if (user && path.startsWith('/auth/sign-in')) {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
+  }
 
   return response
 }
 
+
 export const config = {
   matcher: [
-    // Protect dashboard routes
     '/dashboard/:path*',
-    // Include sign-in and sign-up for session refresh
+    '/auth/sign-in',
     '/auth/:path*',
   ],
 }
