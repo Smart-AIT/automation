@@ -118,10 +118,10 @@ export function EditEntryModal({ entry, isOpen, onClose, onSuccess }: EditEntryM
   if (!isOpen || !entry) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4 max-h-screen overflow-y-auto">
+    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
+      <div className="bg-white rounded-t-2xl sm:rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] sm:max-h-screen overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 sticky top-0 bg-white rounded-t-2xl">
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 sticky top-0 bg-white rounded-t-2xl">
           <h2 className="text-xl font-bold text-gray-900">Edit Entry</h2>
           <button
             onClick={onClose}
@@ -133,7 +133,7 @@ export function EditEntryModal({ entry, isOpen, onClose, onSuccess }: EditEntryM
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6">
           {/* Full Name */}
           <div className="mb-4">
             <label htmlFor="full_name" className="block text-sm font-semibold text-gray-900 mb-2">

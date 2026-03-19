@@ -83,29 +83,29 @@ export function DeliveryTable({ entries, onDelete, onSuccess, isLoading = false 
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto -mx-px">
         <table className="w-full">
           <thead>
             <tr className="bg-gray-50 border-b border-gray-200">
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                 Name
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                 Phone Number
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+              <th className="hidden md:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                 Date of Birth
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+              <th className="hidden lg:table-cell px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                 Custom Message
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
+              <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
+              <th className="px-3 sm:px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
                 Update
               </th>
-              <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
+              <th className="px-3 sm:px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
                 Delete
               </th>
             </tr>
@@ -113,37 +113,37 @@ export function DeliveryTable({ entries, onDelete, onSuccess, isLoading = false 
           <tbody className="divide-y divide-gray-200">
             {entries.map((entry) => (
               <tr key={entry.id} className="hover:bg-gray-50 transition">
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                      <span className="text-sm font-semibold text-blue-700">
+                <td className="px-3 sm:px-6 py-3 sm:py-4">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
+                      <span className="text-xs sm:text-sm font-semibold text-blue-700">
                         {entry.full_name.charAt(0).toUpperCase()}
                         {entry.full_name.split(' ')[1]?.charAt(0).toUpperCase() || entry.full_name.charAt(1).toUpperCase()}
                       </span>
                     </div>
-                    <span className="font-medium text-gray-900">{entry.full_name}</span>
+                    <span className="font-medium text-gray-900 text-sm sm:text-base">{entry.full_name}</span>
                   </div>
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-600">{entry.phone_number}</td>
-                <td className="px-6 py-4 text-sm text-gray-600">{formatDateOfBirth(entry.date_of_birth)}</td>
-                <td className="px-6 py-4 text-sm text-gray-600">
+                <td className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-600">{entry.phone_number}</td>
+                <td className="hidden md:table-cell px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-600">{formatDateOfBirth(entry.date_of_birth)}</td>
+                <td className="hidden lg:table-cell px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-600">
                   <div className="max-w-xs truncate" title={entry.custom_message}>
                     {entry.custom_message}
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">{getStatusBadge(entry.status)}</td>
-                <td className="px-6 py-4 text-center">
+                <td className="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap">{getStatusBadge(entry.status)}</td>
+                <td className="px-3 sm:px-6 py-3 sm:py-4 text-center">
                   <button
-                    className="p-2 text-gray-400 hover:text-blue-600 transition rounded hover:bg-blue-50"
+                    className="p-1.5 sm:p-2 text-gray-400 hover:text-blue-600 transition rounded hover:bg-blue-50"
                     title="Update entry"
                     onClick={() => handleEditClick(entry)}
                   >
                     <Edit className="w-4 h-4" />
                   </button>
                 </td>
-                <td className="px-6 py-4 text-center">
+                <td className="px-3 sm:px-6 py-3 sm:py-4 text-center">
                   <button
-                    className="p-2 text-gray-400 hover:text-red-600 transition rounded hover:bg-red-50"
+                    className="p-1.5 sm:p-2 text-gray-400 hover:text-red-600 transition rounded hover:bg-red-50"
                     title="Delete entry"
                     onClick={() => handleDeleteClick(entry)}
                   >

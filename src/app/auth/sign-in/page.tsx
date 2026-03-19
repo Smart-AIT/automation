@@ -12,7 +12,7 @@ export default function SignInPage() {
   return (
     <div className="space-y-6">
       <AuthHeader
-        title="Birthday Automation"
+        title="SendBox"
         subtitle="Enter your details to access your dashboard"
       />
 

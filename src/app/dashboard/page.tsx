@@ -97,7 +97,7 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white border-b border-gray-200">
-        <div className="px-8 py-5.5">
+        <div className="px-4 sm:px-6 md:px-8 py-4 sm:py-5.5">
           <DashboardHeader
             title="Dashboard"
             // subtitle="Overview of your successful birthday campaigns"
@@ -107,13 +107,13 @@ export default function DashboardPage() {
       </div>
 
       {/* Main Content */}
-      <div className="px-8 py-8">
+      <div className="px-4 sm:px-6 md:px-8 py-4 sm:py-6 md:py-8">
         {/* Statistics Cards */}
         <StatisticsCards statistics={dashboardData.statistics} />
 
         {/* Table Section */}
         <div>
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+          <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">
             Detailed Delivery Status
           </h2>
           <DeliveryTable

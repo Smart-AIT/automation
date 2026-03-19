@@ -21,38 +21,40 @@ export function Pagination({ currentPage, totalPages, hasMore, onPageChange }: P
   }
 
   return (
-    <div className="flex items-center justify-center gap-2 mt-6 pt-6 border-t border-gray-200">
-      <button
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-        className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        <ChevronLeft className="w-5 h-5" />
-      </button>
-
-      {pages.map((page) => (
+    <div className="flex flex-col sm:flex-row items-center justify-center gap-2 mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-gray-200">
+      <div className="flex items-center gap-2">
         <button
-          key={page}
-          onClick={() => onPageChange(page)}
-          className={`w-10 h-10 rounded-lg font-medium transition ${
-            page === currentPage
-              ? 'bg-blue-600 text-white'
-              : 'text-gray-700 hover:bg-gray-100'
-          }`}
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {page}
+          <ChevronLeft className="w-5 h-5" />
         </button>
-      ))}
 
-      <button
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={!hasMore || currentPage === totalPages}
-        className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        <ChevronRight className="w-5 h-5" />
-      </button>
+        {pages.map((page) => (
+          <button
+            key={page}
+            onClick={() => onPageChange(page)}
+            className={`w-9 h-9 sm:w-10 sm:h-10 rounded-lg font-medium transition text-sm sm:text-base ${
+              page === currentPage
+                ? 'bg-blue-600 text-white'
+                : 'text-gray-700 hover:bg-gray-100'
+            }`}
+          >
+            {page}
+          </button>
+        ))}
 
-      <span className="ml-4 text-sm text-gray-600">
+        <button
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={!hasMore || currentPage === totalPages}
+          className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
+      </div>
+
+      <span className="text-xs sm:text-sm text-gray-600 sm:ml-4">
         Showing 1 to {totalPages > 1 ? currentPage * 10 : totalPages * 10} of {totalPages * 10} entries
       </span>
     </div>

@@ -50,10 +50,10 @@ export function DeleteConfirmationModal({
   if (!isOpen || !entry) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full mx-4">
+    <div className="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-end sm:items-center justify-center z-50 p-0 sm:p-4">
+      <div className="bg-white rounded-t-2xl sm:rounded-2xl shadow-xl max-w-md w-full">
         {/* Header with warning icon */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-red-50 rounded-full">
               <AlertTriangle className="w-6 h-6 text-red-600" />
@@ -70,7 +70,7 @@ export function DeleteConfirmationModal({
         </div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           <p className="text-gray-700 mb-2">
             Are you sure you want to delete this entry?
           </p>

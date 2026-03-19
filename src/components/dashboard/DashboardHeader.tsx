@@ -52,14 +52,14 @@ export function DashboardHeader({ title, subtitle, onSearch }: DashboardHeaderPr
   );
 
   return (
-    <div className="flex items-center justify-between">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-1">{title}</h1>
-        {subtitle && <p className="text-gray-600">{subtitle}</p>}
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+      <div className="pl-10 md:pl-0">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-1">{title}</h1>
+        {subtitle && <p className="text-gray-600 text-sm sm:text-base">{subtitle}</p>}
       </div>
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3 sm:gap-4 pl-10 md:pl-0">
         {onSearch && (
-          <div className="relative w-64">
+          <div className="relative flex-1 sm:flex-none sm:w-64">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"

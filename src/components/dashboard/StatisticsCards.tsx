@@ -32,14 +32,14 @@ export function StatisticsCards({ statistics }: StatisticsCardsProps) {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-8">
       {cards.map((card) => (
         <div
           key={card.label}
-          className={`${card.bgClass} border ${card.borderClass} rounded-lg p-6 transition hover:shadow-md`}
+          className={`${card.bgClass} border ${card.borderClass} rounded-lg p-4 sm:p-6 transition hover:shadow-md`}
         >
-          <p className={`${card.textClass} text-sm font-medium mb-2`}>{card.label}</p>
-          <p className={`${card.textClass} text-3xl font-bold`}>{card.value}</p>
+          <p className={`${card.textClass} text-xs sm:text-sm font-medium mb-1 sm:mb-2`}>{card.label}</p>
+          <p className={`${card.textClass} text-2xl sm:text-3xl font-bold`}>{card.value}</p>
         </div>
       ))}
     </div>
