@@ -11,7 +11,7 @@ export default function Home() {
             Sign in
           </Link>
           <Link 
-            href="/auth/sign-up" 
+            href="/auth/sign-in" 
             className="text-sm font-medium bg-slate-900 text-white px-4 py-2 rounded-full hover:bg-slate-800 transition"
           >
             Get started
@@ -33,7 +33,7 @@ export default function Home() {
 
           <div className="flex items-center gap-4">
             <Link 
-              href="/auth/sign-up" 
+              href="/auth/sign-in" 
               className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition shadow-sm"
             >
               Start automating

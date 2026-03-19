@@ -18,11 +18,11 @@ export default function SignInPage() {
 
       <SignInForm />
 
-      <AuthLink
+      {/* <AuthLink
         text="Don't have an account?"
         linkText="Create account"
         href="/auth/sign-up"
-      />
+      /> */}
     </div>
   )
 }
