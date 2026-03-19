@@ -7,18 +7,14 @@ import {
   DeliveryTable,
   Pagination,
 } from '@/components/dashboard';
-import { getEntriesAction, deleteEntryAction } from '@/app/dashboard/actions';
-import { useToast } from '@/context/ToastContext';
+import { getEntriesAction } from '@/app/dashboard/actions';
 import type { RecipientEntry, DashboardResponse } from '@/lib/types/dashboard';
 
 export default function DashboardPage() {
-  const { showToast } = useToast();
   const [dashboardData, setDashboardData] = useState<DashboardResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isDeleting, setIsDeleting] = useState(false);
-
   // Fetch dashboard data
   const fetchData = useCallback(async (page: number, query: string) => {
     try {
@@ -61,29 +57,13 @@ export default function DashboardPage() {
     [searchQuery, fetchData]
   );
 
-  // Handle delete
+  // Handle delete - RefreshData after delete via modal's onSuccess
   const handleDelete = useCallback(
     async (id: string) => {
-      if (confirm('Are you sure you want to delete this entry? This action cannot be undone.')) {
-        try {
-          setIsDeleting(true);
-          const result = await deleteEntryAction(id);
-          if (result.error) {
-            showToast('Failed to delete entry: ' + result.error, 'error');
-          } else {
-            showToast('Entry deleted successfully!', 'success');
-            // Refresh data after delete
-            fetchData(currentPage, searchQuery);
-          }
-        } catch (error) {
-          console.error('Error deleting entry:', error);
-          showToast('An error occurred while deleting the entry', 'error');
-        } finally {
-          setIsDeleting(false);
-        }
-      }
+      // Modal handles deletion, this callback just refreshes data
+      fetchData(currentPage, searchQuery);
     },
-    [currentPage, searchQuery, fetchData, showToast]
+    [currentPage, searchQuery, fetchData]
   );
 
   if (isLoading && !dashboardData) {

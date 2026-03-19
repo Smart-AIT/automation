@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Trash2, Edit } from 'lucide-react';
 import type { RecipientEntry } from '@/lib/types/dashboard';
 import { EditEntryModal } from './EditEntryModal';
+import { DeleteConfirmationModal } from './DeleteConfirmationModal';
 
 interface DeliveryTableProps {
   entries: RecipientEntry[];
@@ -15,18 +16,34 @@ interface DeliveryTableProps {
 export function DeliveryTable({ entries, onDelete, onSuccess, isLoading = false }: DeliveryTableProps) {
   const [selectedEntry, setSelectedEntry] = useState<RecipientEntry | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [deleteEntry, setDeleteEntry] = useState<RecipientEntry | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const handleEditClick = (entry: RecipientEntry) => {
     setSelectedEntry(entry);
     setIsEditModalOpen(true);
   };
 
-  const handleCloseModal = () => {
+  const handleCloseEditModal = () => {
     setIsEditModalOpen(false);
     setSelectedEntry(null);
   };
 
+  const handleDeleteClick = (entry: RecipientEntry) => {
+    setDeleteEntry(entry);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setDeleteEntry(null);
+  };
+
   const handleUpdateSuccess = () => {
+    onSuccess?.();
+  };
+
+  const handleDeleteSuccess = () => {
     onSuccess?.();
   };
   const getStatusBadge = (status: string) => {
@@ -128,7 +145,7 @@ export function DeliveryTable({ entries, onDelete, onSuccess, isLoading = false 
                   <button
                     className="p-2 text-gray-400 hover:text-red-600 transition rounded hover:bg-red-50"
                     title="Delete entry"
-                    onClick={() => onDelete(entry.id)}
+                    onClick={() => handleDeleteClick(entry)}
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -142,8 +159,15 @@ export function DeliveryTable({ entries, onDelete, onSuccess, isLoading = false 
       <EditEntryModal 
         entry={selectedEntry}
         isOpen={isEditModalOpen}
-        onClose={handleCloseModal}
+        onClose={handleCloseEditModal}
         onSuccess={handleUpdateSuccess}
+      />
+
+      <DeleteConfirmationModal
+        entry={deleteEntry}
+        isOpen={isDeleteModalOpen}
+        onClose={handleCloseDeleteModal}
+        onSuccess={handleDeleteSuccess}
       />
     </div>
   );

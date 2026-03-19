@@ -5,3 +5,4 @@ export { StatisticsCards } from './StatisticsCards';
 export { DeliveryTable } from './DeliveryTable';
 export { Pagination } from './Pagination';
 export { NewEntryForm } from './NewEntryForm';
+export { DeleteConfirmationModal } from './DeleteConfirmationModal';
