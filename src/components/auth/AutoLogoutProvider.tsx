@@ -1,36 +1,58 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { signOut } from './signoutServer';
 
+// 2 hours in milliseconds
+const INACTIVITY_TIMEOUT_MS = 2 * 60 * 60 * 1000;
+
 /**
- * Automatically logs the user out when their session expires.
- * @param expiresAt The timestamp (in seconds since epoch) when the session expires
+ * Automatically logs the user out when their session expires due to inactivity.
  */
 export function AutoLogoutProvider({ expiresAt, children }: { expiresAt: number, children: React.ReactNode }) {
-  useEffect(() => {
-    // Calculate time remaining in milliseconds
-    const now = Math.floor(Date.now() / 1000);
-    const timeRemainingSeconds = expiresAt - now;
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    if (timeRemainingSeconds <= 0) {
-      // Session already expired
-      console.log('Session expired, auto-logging out...');
-      signOut();
-      return;
+  const resetTimer = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
     }
 
-    // Set a timeout to log out exactly when the session expires
-    const timeoutMs = timeRemainingSeconds * 1000;
-    console.log(`Auto-logout scheduled in ${timeRemainingSeconds} seconds`);
+    timeoutRef.current = setTimeout(async () => {
+      console.log('Session expired due to inactivity, auto-logging out...');
+      try {
+        await signOut();
+      } catch (error) {
+        // Next.js redirect() throws an error internally. We can safely ignore it.
+      }
+      // Force navigation to ensure the UI actually changes
+      window.location.href = '/auth/sign-in';
+    }, INACTIVITY_TIMEOUT_MS);
+  };
 
-    const timeoutId = setTimeout(() => {
-      console.log('Session expired, auto-logging out...');
-      signOut();
-    }, timeoutMs);
+  useEffect(() => {
+    // Initial timer setup
+    resetTimer();
 
-    return () => clearTimeout(timeoutId);
-  }, [expiresAt]);
+    // Setup event listeners for user activity
+    const events = ['mousedown', 'mousemove', 'keydown', 'scroll', 'touchstart'];
+    
+    const handleActivity = () => {
+      resetTimer();
+    };
+
+    events.forEach((event) => {
+      window.addEventListener(event, handleActivity);
+    });
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      events.forEach((event) => {
+        window.removeEventListener(event, handleActivity);
+      });
+    };
+  }, []);
 
   return <>{children}</>;
 }
