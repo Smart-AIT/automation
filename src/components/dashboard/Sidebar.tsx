@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Send, Plus, LogOut, Menu, X } from 'lucide-react';
+import { Send, Plus, LogOut, Menu, X, Smartphone } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { signOut } from '../auth/signoutServer';
 import { useState, useEffect } from 'react';
@@ -29,7 +29,7 @@ export function Sidebar() {
 
   const navItems = [
     {
-      label: 'Sent',
+      label: 'Dashboard',
       href: '/dashboard',
       icon: Send,
       active: pathname === '/dashboard',
@@ -39,6 +39,12 @@ export function Sidebar() {
       href: '/dashboard/new',
       icon: Plus,
       active: pathname === '/dashboard/new',
+    },
+    {
+      label: 'Connect WhatsApp',
+      href: '/dashboard/connect',
+      icon: Smartphone,
+      active: pathname === '/dashboard/connect',
     },
   ];
 
