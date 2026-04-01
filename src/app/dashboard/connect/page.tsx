@@ -22,7 +22,7 @@ export default function ConnectPage() {
         </div>
 
         {/* Additional Info */}
-        <div className="max-w-2xl mt-6 space-y-4">
+        {/* <div className="max-w-2xl mt-6 space-y-4">
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h3 className="font-semibold text-gray-900 mb-3">Frequently Asked Questions</h3>
             <div className="space-y-4 text-sm">
@@ -46,7 +46,7 @@ export default function ConnectPage() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
