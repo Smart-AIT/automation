@@ -249,10 +249,10 @@ export function WhatsAppConnect() {
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8">
-        <div className="flex items-center justify-center">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 sm:p-8">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
           <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-          <span className="ml-3 text-gray-600">Loading WhatsApp status...</span>
+          <span className="text-sm sm:text-base text-gray-600">Loading WhatsApp status...</span>
         </div>
       </div>
     );
@@ -261,21 +261,21 @@ export function WhatsAppConnect() {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
       {/* Header */}
-      <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+      <div className="px-4 sm:px-6 py-4 border-b border-gray-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-0">
+        <div className="flex items-center gap-3 w-full sm:w-auto">
+          <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center shrink-0">
             <WhatsAppIcon className="w-5 h-5 text-green-600" />
           </div>
-          <div>
-            <h2 className="text-lg font-semibold text-gray-900">WhatsApp Connection</h2>
-            <p className="text-sm text-gray-500">Connect your WhatsApp to send birthday messages</p>
+          <div className="min-w-0">
+            <h2 className="text-base sm:text-lg font-semibold text-gray-900 truncate">WhatsApp Connection</h2>
+            <p className="text-xs sm:text-sm text-gray-500 truncate">Connect your WhatsApp to send birthday messages</p>
           </div>
         </div>
-        {renderStatusBadge()}
+        <div className="shrink-0">{renderStatusBadge()}</div>
       </div>
 
       {/* Content */}
-      <div className="p-6">
+      <div className="p-4 sm:p-6">
         {error && (
           <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
             {error}
@@ -285,15 +285,15 @@ export function WhatsAppConnect() {
         {/* Connected State */}
         {status === 'connected' && (
           <div className="space-y-4">
-            <div className="flex items-center gap-4 p-4 bg-green-50 rounded-lg">
-              <CheckCircle className="w-8 h-8 text-green-600" />
-              <div>
-                <p className="font-medium text-green-900">WhatsApp Connected!</p>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 bg-green-50 rounded-lg overflow-hidden">
+              <CheckCircle className="w-8 h-8 text-green-600 shrink-0" />
+              <div className="min-w-0">
+                <p className="font-medium text-green-900 truncate">WhatsApp Connected!</p>
                 {phoneNumber && (
-                  <p className="text-sm text-green-700">Phone: {phoneNumber}</p>
+                  <p className="text-sm text-green-700 truncate">Phone: {phoneNumber}</p>
                 )}
                 {sessionName && (
-                  <p className="text-sm text-green-700">Session: {sessionName}</p>
+                  <p className="text-sm text-green-700 truncate">Session: {sessionName}</p>
                 )}
               </div>
             </div>
@@ -305,7 +305,7 @@ export function WhatsAppConnect() {
             <button
               onClick={handleDisconnect}
               disabled={isDisconnecting}
-              className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition disabled:opacity-50"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition disabled:opacity-50"
             >
               {isDisconnecting ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -320,13 +320,13 @@ export function WhatsAppConnect() {
         {/* QR Code Loading State */}
         {(status === 'need_scan' || status === 'connecting') && !qrCode && isFetchingQR && (
           <div className="space-y-4">
-            <div className="flex flex-col items-center py-8">
-              <div className="w-64 h-64 bg-gray-100 rounded-xl flex items-center justify-center">
+            <div className="flex flex-col items-center py-6 sm:py-8">
+              <div className="w-full max-w-[16rem] aspect-square bg-gray-100 rounded-xl flex items-center justify-center p-4">
                 <div className="text-center">
-                  <Loader2 className="w-12 h-12 text-blue-500 animate-spin mx-auto mb-4" />
-                  <p className="text-gray-600">Loading QR Code...</p>
+                  <Loader2 className="w-10 h-10 sm:w-12 sm:h-12 text-blue-500 animate-spin mx-auto mb-3 sm:mb-4" />
+                  <p className="text-sm sm:text-base text-gray-600">Loading QR Code...</p>
                   {qrRetryRef.current > 0 && (
-                    <p className="text-sm text-gray-500 mt-2">Attempt {qrRetryRef.current + 1}</p>
+                    <p className="text-xs sm:text-sm text-gray-500 mt-2">Attempt {qrRetryRef.current + 1}</p>
                   )}
                 </div>
               </div>
@@ -337,14 +337,14 @@ export function WhatsAppConnect() {
         {/* QR Code Not Available State */}
         {(status === 'need_scan' || status === 'connecting') && !qrCode && !isFetchingQR && (
           <div className="space-y-4">
-            <div className="flex flex-col items-center py-8">
-              <div className="w-64 h-64 bg-gray-100 rounded-xl flex items-center justify-center">
+            <div className="flex flex-col items-center py-6 sm:py-8">
+              <div className="w-full max-w-[16rem] aspect-square bg-gray-100 rounded-xl flex items-center justify-center p-4">
                 <div className="text-center">
-                  <QrCode className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-600">QR Code not available</p>
+                  <QrCode className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400 mx-auto mb-3 sm:mb-4" />
+                  <p className="text-sm sm:text-base text-gray-600">QR Code not available</p>
                   <button
                     onClick={() => fetchQRCode()}
-                    className="mt-4 flex items-center gap-2 px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition mx-auto"
+                    className="mt-3 sm:mt-4 flex items-center gap-2 px-4 py-2 text-sm sm:text-base text-blue-600 hover:bg-blue-50 rounded-lg transition mx-auto"
                   >
                     <RefreshCw className="w-4 h-4" />
                     Try Again
@@ -358,25 +358,25 @@ export function WhatsAppConnect() {
         {/* QR Code State */}
         {(status === 'need_scan' || status === 'connecting') && qrCode && (
           <div className="space-y-4">
-            <div className="flex flex-col items-center">
-              <div className="p-4 bg-white border-2 border-gray-200 rounded-xl">
+            <div className="flex flex-col items-center px-4 sm:px-0">
+              <div className="p-3 sm:p-4 bg-white border-2 border-gray-200 rounded-xl w-full max-w-[18rem]">
                 <img
                   src={qrCode}
                   alt="WhatsApp QR Code"
-                  className="w-64 h-64"
+                  className="w-full h-auto aspect-square"
                   onError={(e) => {
                     console.error('QR image failed to load:', qrCode?.substring(0, 100));
                     e.currentTarget.style.display = 'none';
                   }}
                 />
               </div>
-              <p className="mt-4 text-center text-gray-600">
+              <p className="mt-4 text-center text-sm sm:text-base text-gray-600 max-w-sm">
                 Open WhatsApp on your phone → Settings → Linked Devices → Link a Device
               </p>
               <button
                 onClick={handleRefreshQR}
                 disabled={isFetchingQR}
-                className="mt-3 flex items-center gap-2 px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition disabled:opacity-50"
+                className="w-full sm:w-auto mt-4 sm:mt-3 flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition disabled:opacity-50"
               >
                 {isFetchingQR ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
                 {isFetchingQR ? 'Refreshing...' : 'Refresh QR Code'}
@@ -395,18 +395,18 @@ export function WhatsAppConnect() {
         {status === 'needs_phone' && (
           <div className="space-y-4">
             <div className="text-center py-4">
-              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Phone className="w-8 h-8 text-blue-600" />
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <Phone className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Enter Your WhatsApp Number</h3>
-              <p className="text-gray-600 mb-6">
+              <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-1 sm:mb-2">Enter Your WhatsApp Number</h3>
+              <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 max-w-sm mx-auto">
                 We need your phone number to set up the WhatsApp connection.
               </p>
             </div>
 
-            <form onSubmit={handlePhoneSubmit} className="max-w-md mx-auto space-y-4">
+            <form onSubmit={handlePhoneSubmit} className="max-w-md mx-auto space-y-4 w-full">
               <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="phone" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                   WhatsApp Phone Number
                 </label>
                 <input
@@ -415,9 +415,9 @@ export function WhatsAppConnect() {
                   value={phoneInput}
                   onChange={(e) => setPhoneInput(e.target.value)}
                   placeholder="+91 98765 43210"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-lg"
+                  className="w-full px-3 py-2.5 sm:px-4 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 text-base sm:text-lg"
                 />
-                <p className="mt-1 text-xs text-gray-500">
+                <p className="mt-1.5 text-xs text-gray-500">
                   Include country code (e.g., +91 for India, +1 for USA)
                 </p>
               </div>
@@ -425,16 +425,16 @@ export function WhatsAppConnect() {
               <button
                 type="submit"
                 disabled={isConnecting || !phoneInput.trim()}
-                className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-50 font-medium"
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 sm:px-6 sm:py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-50 font-medium text-sm sm:text-base"
               >
                 {isConnecting ? (
                   <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
                     Setting up...
                   </>
                 ) : (
                   <>
-                    <WhatsAppIcon className="w-5 h-5" />
+                    <WhatsAppIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                     Continue
                   </>
                 )}
@@ -443,7 +443,7 @@ export function WhatsAppConnect() {
               <button
                 type="button"
                 onClick={() => setStatus('disconnected')}
-                className="w-full text-gray-500 hover:text-gray-700 text-sm"
+                className="w-full text-gray-500 hover:text-gray-700 text-xs sm:text-sm py-2"
               >
                 Cancel
               </button>
@@ -453,37 +453,37 @@ export function WhatsAppConnect() {
 
         {/* Disconnected / Not Configured State */}
         {(status === 'disconnected' || status === 'not_configured' || status === 'logged_out' || status === 'expired') && !qrCode && (
-          <div className="space-y-4">
-            <div className="text-center py-6">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <WhatsAppIcon className="w-8 h-8 text-gray-400" />
+          <div className="space-y-4 sm:space-y-6">
+            <div className="text-center py-4 sm:py-6">
+              <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                <WhatsAppIcon className="w-7 h-7 sm:w-8 sm:h-8 text-gray-400" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">WhatsApp Not Connected</h3>
-              <p className="text-gray-600 mb-6">
+              <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-1 sm:mb-2">WhatsApp Not Connected</h3>
+              <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 max-w-sm mx-auto">
                 Connect your WhatsApp to enable automatic birthday message sending.
               </p>
               <button
                 onClick={() => handleConnect()}
                 disabled={isConnecting}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-50 font-medium"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 sm:py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition disabled:opacity-50 font-medium text-sm sm:text-base"
               >
                 {isConnecting ? (
                   <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
                     Connecting...
                   </>
                 ) : (
                   <>
-                    <WhatsAppIcon className="w-5 h-5" />
+                    <WhatsAppIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                     Connect WhatsApp
                   </>
                 )}
               </button>
             </div>
 
-            <div className="p-4 bg-gray-50 rounded-lg">
-              <h4 className="font-medium text-gray-900 mb-2">How it works:</h4>
-              <ol className="text-sm text-gray-600 space-y-1 list-decimal list-inside">
+            <div className="p-3 sm:p-4 bg-gray-50 rounded-lg">
+              <h4 className="text-sm sm:text-base font-medium text-gray-900 mb-2">How it works:</h4>
+              <ol className="text-xs sm:text-sm text-gray-600 space-y-1.5 sm:space-y-1 list-decimal list-inside pl-1">
                 <li>Click &quot;Connect WhatsApp&quot; and enter your phone number</li>
                 <li>Scan the QR code with WhatsApp on your phone</li>
                 <li>Go to Settings → Linked Devices → Link a Device</li>
@@ -495,10 +495,10 @@ export function WhatsAppConnect() {
 
         {/* Connecting without QR yet */}
         {status === 'connecting' && !qrCode && (
-          <div className="flex flex-col items-center py-8">
-            <Loader2 className="w-12 h-12 animate-spin text-blue-600 mb-4" />
-            <p className="text-gray-600">Preparing connection...</p>
-            <p className="text-sm text-gray-500 mt-2">Please wait while we generate the QR code</p>
+          <div className="flex flex-col items-center py-6 sm:py-8">
+            <Loader2 className="w-10 h-10 sm:w-12 sm:h-12 animate-spin text-blue-600 mb-3 sm:mb-4" />
+            <p className="text-sm sm:text-base text-gray-600 font-medium">Preparing connection...</p>
+            <p className="text-xs sm:text-sm text-gray-500 mt-1 sm:mt-2 text-center">Please wait while we generate the QR code</p>
           </div>
         )}
       </div>
