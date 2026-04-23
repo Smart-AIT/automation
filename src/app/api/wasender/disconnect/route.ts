@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
-import { disconnectSession } from '@/lib/services/wasender';
+import { disconnectSession, deleteSession } from '@/lib/services/wasender';
 
-const WASENDER_ACCESS_TOKEN = process.env.WASENDER_ACCESS_TOKEN;
+const WASENDER_ACCESS_TOKEN = process.env.WASENDER_PERSONAL_ACCESS_TOKEN;
 
 export async function POST() {
   try {
@@ -42,33 +42,48 @@ export async function POST() {
       );
     }
 
-    // Disconnect from WaSender
+    console.log('[DISCONNECT] Starting disconnect + delete for session:', client.session_id);
+
+    // Step 1: Disconnect the session from WaSender
     const disconnectResult = await disconnectSession(
       WASENDER_ACCESS_TOKEN,
       client.session_id
     );
+    console.log('[DISCONNECT] Disconnect result:', disconnectResult);
 
-    // Update client status regardless of API result
+    // Step 2: Delete the session from WaSender so the phone number is freed up
+    const deleteResult = await deleteSession(
+      WASENDER_ACCESS_TOKEN,
+      client.session_id
+    );
+    console.log('[DISCONNECT] Delete result:', deleteResult);
+
+    // Step 3: Clean up the local database — clear session data so user can reconnect fresh
     await supabase
       .from('clients')
       .update({
+        session_id: null,
+        session_name: null,
+        api_key: null,
         status: 'disconnected',
+        phone_number: null,
         updated_at: new Date().toISOString(),
       })
       .eq('user_id', user.id);
 
+    const warnings: string[] = [];
     if (!disconnectResult.success) {
-      // Still return success since we updated local status
-      return NextResponse.json({
-        success: true,
-        message: 'Session marked as disconnected',
-        warning: disconnectResult.error,
-      });
+      warnings.push(`Disconnect: ${disconnectResult.error}`);
+    }
+    if (!deleteResult.success) {
+      warnings.push(`Delete: ${deleteResult.error}`);
     }
 
     return NextResponse.json({
       success: true,
-      message: 'WhatsApp disconnected successfully',
+      message: 'WhatsApp disconnected and session deleted successfully',
+      sessionDeleted: deleteResult.success,
+      warnings: warnings.length > 0 ? warnings : undefined,
     });
   } catch (error) {
     console.error('Error in disconnect route:', error);

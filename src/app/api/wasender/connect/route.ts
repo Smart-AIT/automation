@@ -60,13 +60,22 @@ export async function POST(request: Request) {
 
     // Check if there are existing sessions we can use
     if (sessionsResult.data && sessionsResult.data.length > 0) {
-      // Use the first available session
+      // Use the first available session — regardless of its current status.
+      // If it's connected we return early; if it's disconnected/expired/logged_out
+      // we fall through to reconnect it via connectSession() below.
       const session = sessionsResult.data[0];
       sessionId = session.id;
       apiKey = session.api_key;
       sessionName = session.name;
 
-      // If session is already connected, just update our database
+      console.log('[CONNECT] Found existing session:', {
+        id: sessionId,
+        name: sessionName,
+        status: session.status,
+        phone: session.phone_number,
+      });
+
+      // If session is already connected, just update our database and return
       if (session.status === 'connected') {
         if (existingClient) {
           await supabase
@@ -98,6 +107,9 @@ export async function POST(request: Request) {
           alreadyConnected: true,
         });
       }
+
+      // For any other status (disconnected, expired, logged_out, need_scan, etc.),
+      // we fall through to reconnect the EXISTING session below — no new session needed.
     } else {
       // No sessions exist - we need to create one
       // Phone number is required for creating a new session
@@ -125,15 +137,39 @@ export async function POST(request: Request) {
       });
 
       if (!newSession.success || !newSession.data) {
-        return NextResponse.json(
-          { error: newSession.error || 'Failed to create WhatsApp session' },
-          { status: 500 }
-        );
+        // Handle "number already used" — the phone is tied to a session on WaSender
+        // that we couldn't see (e.g. it was created outside this app).
+        // Re-fetch sessions in case one appeared after the failed create.
+        const errorMsg = (newSession.error || '').toLowerCase();
+        if (errorMsg.includes('already') || errorMsg.includes('exists') || errorMsg.includes('used')) {
+          console.log('[CONNECT] Number already in use, re-fetching sessions...');
+          const retryResult = await getAllSessions(WASENDER_ACCESS_TOKEN);
+          if (retryResult.success && retryResult.data && retryResult.data.length > 0) {
+            const existingSession = retryResult.data[0];
+            sessionId = existingSession.id;
+            apiKey = existingSession.api_key;
+            sessionName = existingSession.name;
+            console.log('[CONNECT] Found existing session on retry:', sessionId);
+            // Fall through to connectSession below
+          } else {
+            return NextResponse.json(
+              {
+                error: 'This phone number is already registered with another WaSender session. Please log in to wasenderapi.com and delete the old session first, then try again.',
+              },
+              { status: 409 }
+            );
+          }
+        } else {
+          return NextResponse.json(
+            { error: newSession.error || 'Failed to create WhatsApp session' },
+            { status: 500 }
+          );
+        }
+      } else {
+        sessionId = newSession.data.id;
+        apiKey = newSession.data.api_key;
+        sessionName = newSession.data.name;
       }
-
-      sessionId = newSession.data.id;
-      apiKey = newSession.data.api_key;
-      sessionName = newSession.data.name;
     }
 
     // Connect the session (this initiates QR code generation)

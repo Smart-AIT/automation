@@ -313,33 +313,109 @@ export async function disconnectSession(
   accessToken: string,
   sessionId: number
 ): Promise<WaSenderApiResponse<null>> {
-  try {
-    const response = await fetch(
-      `${WASENDER_BASE_URL}/whatsapp-sessions/${sessionId}/disconnect`,
-      {
-        method: 'POST',
-        headers: getAuthHeaders(accessToken),
-      }
-    );
+  console.log('\n[WASENDER] ===== disconnectSession called =====');
+  console.log('[WASENDER] sessionId:', sessionId);
 
-    const data = await response.json();
+  try {
+    const url = `${WASENDER_BASE_URL}/whatsapp-sessions/${sessionId}/disconnect`;
+    const response = await debugFetch(`POST /whatsapp-sessions/${sessionId}/disconnect`, url, {
+      method: 'POST',
+      headers: getAuthHeaders(accessToken),
+    });
+
+    const rawText = await response.text();
+    console.log('[WASENDER] disconnectSession raw response:', rawText.substring(0, 1000));
+
+    let data: any;
+    try {
+      data = JSON.parse(rawText);
+    } catch {
+      return { success: false, error: `Invalid JSON: ${rawText.substring(0, 200)}` };
+    }
 
     if (!response.ok) {
+      console.error('[WASENDER] disconnectSession FAILED:', data.message || data);
       return {
         success: false,
         error: data.message || 'Failed to disconnect session',
       };
     }
 
+    console.log('[WASENDER] disconnectSession SUCCESS');
     return {
       success: true,
       message: data.message || 'Session disconnected',
     };
   } catch (error) {
-    console.error('Error disconnecting session:', error);
+    console.error('[WASENDER] disconnectSession EXCEPTION:', error);
     return {
       success: false,
       error: 'Network error while disconnecting session',
+    };
+  }
+}
+
+/**
+ * Delete a WhatsApp session from WaSender
+ * This permanently removes the session so the phone number can be reused.
+ * Uses Personal Access Token (PAT).
+ * Official SDK: DELETE /api/whatsapp-sessions/{sessionId}
+ */
+export async function deleteSession(
+  accessToken: string,
+  sessionId: number
+): Promise<WaSenderApiResponse<null>> {
+  console.log('\n[WASENDER] ===== deleteSession called =====');
+  console.log('[WASENDER] sessionId:', sessionId);
+
+  try {
+    const url = `${WASENDER_BASE_URL}/whatsapp-sessions/${sessionId}`;
+    const response = await debugFetch(`DELETE /whatsapp-sessions/${sessionId}`, url, {
+      method: 'DELETE',
+      headers: getAuthHeaders(accessToken),
+    });
+
+    // A 204 No Content response means success with no body
+    if (response.status === 204) {
+      console.log('[WASENDER] deleteSession SUCCESS (204 No Content)');
+      return {
+        success: true,
+        message: 'Session deleted successfully',
+      };
+    }
+
+    const rawText = await response.text();
+    console.log('[WASENDER] deleteSession raw response:', rawText.substring(0, 1000));
+
+    let data: any;
+    try {
+      data = JSON.parse(rawText);
+    } catch {
+      // If we got a 2xx status but non-JSON body, still treat as success
+      if (response.ok) {
+        return { success: true, message: 'Session deleted successfully' };
+      }
+      return { success: false, error: `Invalid JSON: ${rawText.substring(0, 200)}` };
+    }
+
+    if (!response.ok) {
+      console.error('[WASENDER] deleteSession FAILED:', data.message || data);
+      return {
+        success: false,
+        error: data.message || 'Failed to delete session',
+      };
+    }
+
+    console.log('[WASENDER] deleteSession SUCCESS');
+    return {
+      success: true,
+      message: data.message || 'Session deleted successfully',
+    };
+  } catch (error) {
+    console.error('[WASENDER] deleteSession EXCEPTION:', error);
+    return {
+      success: false,
+      error: 'Network error while deleting session',
     };
   }
 }
