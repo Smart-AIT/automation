@@ -129,7 +129,7 @@ export async function POST(request: Request) {
 
       // Create a new session with all required fields
       const newSession = await createSession(WASENDER_ACCESS_TOKEN, {
-        name: `Birthday Bot - ${user.email || user.id.slice(0, 8)}`,
+        name: `SendBox - ${user.email || user.id.slice(0, 8)}`,
         phone_number: formattedPhone,
         account_protection: true,
         log_messages: true,
